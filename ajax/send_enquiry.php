@@ -9,6 +9,9 @@ header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../includes/config.php';
 
+// Start session to check if user is logged in
+session_start();
+
 // ── Accept POST only ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -27,7 +30,9 @@ $fullName      = clean($_POST['full_name']      ?? '');
 $email         = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $phone         = clean($_POST['phone']          ?? '');
 $service       = clean($_POST['service']        ?? '');
-$preferredCars = clean($_POST['preferred_cars'] ?? '');
+// Handle cars array from checkboxes
+$carsArray     = $_POST['cars'] ?? [];
+$preferredCars = implode(', ', array_map('clean', (array)$carsArray));
 $budget        = clean($_POST['budget']         ?? '');
 $howHear       = clean($_POST['how_hear']       ?? '');
 $message       = clean($_POST['message']        ?? '');
@@ -56,6 +61,20 @@ if (empty($preferredCars)) {
 if (!empty($errors)) {
     echo json_encode(['success' => false, 'message' => implode(' ', $errors)]);
     exit;
+}
+
+// ── Save to database ──────────────────────────────────────────────────────────
+$id = $_SESSION['id'] ?? null;
+$cars = implode(', ', array_map('clean', explode(',', $preferredCars))); // Assuming cars are comma-separated
+
+try {
+    $pdo = getDB();
+    $stmt = $pdo->prepare("INSERT INTO enquiries (id, full_name, email, phone, service, cars, budget, how_hear, message, rating, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt->execute([$id, $fullName, $email, $phone, $service, $cars, $budget, $howHear, $message, $rating]);
+} catch (PDOException $e) {
+    // Log DB error but continue with email sending
+    $logEntry = date('Y-m-d H:i:s') . " | DB SAVE FAIL | {$fullName} | {$email} | Error: {$e->getMessage()}\n";
+    @file_put_contents(__DIR__ . '/../logs/db_errors.log', $logEntry, FILE_APPEND | LOCK_EX);
 }
 
 // ── Build content shared by both emails ───────────────────────────────────────

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . '/includes/config.php';
 $pageTitle = SITE_NAME . ' — ' . SITE_TAGLINE;
 ?>
@@ -46,7 +47,17 @@ $pageTitle = SITE_NAME . ' — ' . SITE_TAGLINE;
         <li class="nav-item"><a class="nav-link" href="#testimonials">Reviews</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
       </ul>
-      <a href="#enquiry" class="btn-enquire-nav nav-link">Get a Quote</a>
+      <?php if (isset($_SESSION['id'])): ?>
+        <div class="navbar-nav">
+          <span class="navbar-text me-2">Welcome, <?= htmlspecialchars($_SESSION['email']) ?>!</span>
+          <a class="nav-link" href="dashboard.php">Dashboard</a>
+          <a class="nav-link" href="logout.php">Logout</a>
+        </div>
+      <?php else: ?>
+        <div class="navbar-nav">
+          <a class="nav-link" href="login.php">Login</a>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 </nav>
@@ -203,44 +214,43 @@ $pageTitle = SITE_NAME . ' — ' . SITE_TAGLINE;
     </div>
 
     <!-- Filter Buttons -->
+    <?php
+    try {
+        $pdo = getDB();
+        $categories = $pdo->query("SELECT DISTINCT category FROM cars WHERE category IS NOT NULL AND category != '' ORDER BY category")->fetchAll(PDO::FETCH_COLUMN);
+        $cars = $pdo->query("SELECT * FROM cars ORDER BY name")->fetchAll();
+    } catch (PDOException $e) {
+        $categories = ['Sedan', 'SUV', 'Van / Minibus', 'Eco Taxi'];
+        $cars = []; // Fallback to empty if DB error
+    }
+    ?>
     <div class="car-filter-btns justify-content-center">
       <button class="filter-btn active" data-filter="all">All Vehicles</button>
-      <button class="filter-btn" data-filter="sedan">Sedan</button>
-      <button class="filter-btn" data-filter="suv">SUV</button>
-      <button class="filter-btn" data-filter="van">Van / Minibus</button>
-      <button class="filter-btn" data-filter="taxi">Eco Taxi</button>
+      <?php foreach ($categories as $category): ?>
+        <button class="filter-btn" data-filter="<?= htmlspecialchars($category) ?>"><?= htmlspecialchars($category) ?></button>
+      <?php endforeach; ?>
     </div>
 
     <div class="row g-4">
       <?php
-      $cars = [
-        ['🚗', 'BYD Atto 3', 'sedan',  'SUV', '420 km',   '5',  'USD 28,500', 'EV'],
-        ['🚙', 'BYD Seal',   'sedan',  'Sedan','570 km',   '5',  'USD 32,000', 'EV'],
-        ['🚐', 'BYD e6',     'van',    'MPV',  '400 km',   '6',  'USD 35,000', 'EV'],
-        ['🚕', 'NETA V',     'taxi',   'Sedan','401 km',   '5',  'USD 18,000', 'EV'],
-        ['🚙', 'MG ZS EV',   'suv',    'SUV',  '440 km',   '5',  'USD 26,500', 'EV'],
-        ['🚗', 'NETA S',     'sedan',  'Sedan','715 km',   '5',  'USD 38,000', 'EV'],
-        ['🚐', 'BYD T3',     'van',    'Van',  '300 km',   '7',  'USD 22,000', 'EV'],
-        ['🚙', 'Chery Omoda','suv',    'SUV',  '430 km',   '5',  'USD 24,000', 'EV'],
-      ];
       foreach ($cars as $c): ?>
       <div class="col-sm-6 col-lg-3">
-        <div class="car-card" data-cat="<?= $c[2] ?>">
+        <div class="car-card" data-cat="<?= htmlspecialchars($c['category']) ?>">
           <div class="car-img">
-            <span><?= $c[0] ?></span>
-            <span class="car-ev-tag"><?= $c[7] ?></span>
+            <img src="<?= htmlspecialchars($c['image']) ?>" alt="Cart" width="100%" height="100%">
+            <span class="car-ev-tag"><?= htmlspecialchars($c['fuel_type']) ?></span>
           </div>
           <div class="car-body">
-            <h6><?= $c[1] ?></h6>
+            <h6><?= htmlspecialchars($c['name']) ?></h6>
             <div class="car-meta">
-              <span><i class="bi bi-car-front"></i> <?= $c[3] ?></span>
-              <span><i class="bi bi-battery-charging"></i> <?= $c[4] ?></span>
-              <span><i class="bi bi-people"></i> <?= $c[5] ?> seats</span>
+              <span><i class="bi bi-car-front"></i> <?= htmlspecialchars($c['type']) ?></span>
+              <span><i class="bi bi-battery-charging"></i> <?= htmlspecialchars($c['range_km']) ?></span>
+              <span><i class="bi bi-people"></i> <?= htmlspecialchars($c['seats']) ?> seats</span>
             </div>
             <div class="d-flex align-items-center justify-content-between mt-1">
-              <div class="car-price"><?= $c[6] ?><br><small>Starting price</small></div>
+              <div class="car-price"><?= htmlspecialchars($c['price']) ?><br><small>Starting price</small></div>
             </div>
-            <button class="btn-car-enquire" data-car="<?= $c[1] ?>">
+            <button class="btn-car-enquire" data-car="<?= htmlspecialchars($c['name']) ?>">
               <i class="bi bi-envelope-fill"></i> Enquire Now
             </button>
           </div>
@@ -461,7 +471,12 @@ foreach ($testimonials as $t):
                   <p class="text-muted mb-2" style="font-size:.83rem;">Select all models you're interested in:</p>
                   <div class="car-checkbox-group">
                     <?php
-                    $carModels = ['BYD Atto 3', 'BYD Seal', 'BYD e6 (MPV)', 'NETA V', 'MG ZS EV', 'NETA S', 'BYD T3 (Van)', 'Chery Omoda', 'Other / Custom'];
+                    try {
+                        $pdo = getDB();
+                        $carModels = $pdo->query("SELECT name FROM cars ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
+                    } catch (PDOException $e) {
+                        $carModels = ['BYD Atto 3', 'BYD Seal', 'BYD e6 (MPV)', 'NETA V', 'MG ZS EV', 'NETA S', 'BYD T3 (Van)', 'Chery Omoda', 'Other / Custom'];
+                    }
                     foreach ($carModels as $model): ?>
                     <label class="car-checkbox-item">
                       <input type="checkbox" name="cars[]" value="<?= htmlspecialchars($model) ?>">
