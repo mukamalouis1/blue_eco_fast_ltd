@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             <hr class="admin-nav-divider">
             <ul class="admin-nav">
                 <li class="admin-nav-item">
-                    <a href="../profile.php" class="admin-nav-link">
+                    <a href="profile.php" class="admin-nav-link">
                         <i class="bi bi-person-circle"></i> My Profile
                     </a>
                 </li>

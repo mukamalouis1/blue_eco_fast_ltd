@@ -122,7 +122,27 @@ function sendMail(
  * Check if user is admin.
  */
 function isAdmin(): bool {
-    return isset($_SESSION['id']) && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+    // App is admin-only. Any authenticated session is considered admin.
+    return isset($_SESSION['id']) && (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] === true);
+}
+
+/**
+ * Calculate app base path for redirects.
+ */
+function appBasePath(): string {
+    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+    $script = str_replace('\\', '/', $script);
+    if ($script === '') return '';
+
+    // If we are inside /admin/, strip it to get the project base.
+    $pos = strpos($script, '/admin/');
+    if ($pos !== false) {
+        return substr($script, 0, $pos);
+    }
+
+    // Otherwise, use the current directory.
+    $dir = rtrim(dirname($script), '/');
+    return $dir === '.' ? '' : $dir;
 }
 
 /**
@@ -130,7 +150,7 @@ function isAdmin(): bool {
  */
 function requireAdmin(): void {
     if (!isAdmin()) {
-        header('Location: login.php');
+        header('Location: ' . appBasePath() . '/login.php');
         exit;
     }
 }

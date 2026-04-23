@@ -65,43 +65,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password - <?= SITE_NAME ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Forgot Password</h3>
+<body style="min-height:100vh; background: var(--gradient-secondary);">
+    <div class="container" style="min-height:100vh; display:flex; align-items:center; padding: 80px 0;">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-8 col-lg-5">
+                <div class="form-card" style="padding: var(--space-2xl);">
+                    <div class="text-center mb-4">
+                        <a href="index.php" class="d-inline-flex align-items-center gap-2" style="text-decoration:none;">
+                            <img src="images/logo.png" alt="<?= SITE_NAME ?>" style="height:42px;width:auto;">
+                        </a>
+                        <h2 class="mt-3 mb-1" style="color: var(--navy-dark); font-weight: 900;">Forgot Password</h2>
+                        <p class="text-muted mb-0" style="font-size:.95rem;">Reset your password to regain access.</p>
                     </div>
-                    <div class="card-body">
-                        <?php if ($message): ?>
-                            <div class="alert alert-success">
-                                <?= $message ?>
-                                <br><br>
-                                <a href="login.php" class="btn btn-primary">Back to Login</a>
-                            </div>
-                        <?php elseif ($error): ?>
-                            <div class="alert alert-danger">
-                                <?= $error ?>
-                                <br><br>
-                                <a href="login.php" class="btn btn-secondary">Back to Login</a>
-                            </div>
-                        <?php else: ?>
-                            <p>Enter your email address and we'll send you a link to reset your password.</p>
 
-                            <form method="post">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address *</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Send Reset Link</button>
-                                <a href="login.php" class="btn btn-secondary ms-2">Back to Login</a>
-                            </form>
-                        <?php endif; ?>
-                    </div>
+                    <?php if ($message): ?>
+                        <div class="admin-alert admin-alert-success">
+                            <i class="bi bi-check-circle"></i>
+                            <div>
+                                <?= htmlspecialchars($message) ?>
+                            </div>
+                        </div>
+                        <div class="admin-form-actions" style="border-top: none; padding-top: 0; margin-top: var(--space-lg);">
+                            <a href="login.php" class="admin-btn admin-btn-primary w-100 justify-content-center" style="padding: var(--space-md) var(--space-lg);">
+                                <i class="bi bi-arrow-left"></i> Back to Login
+                            </a>
+                        </div>
+                    <?php elseif ($error): ?>
+                        <div class="admin-alert admin-alert-danger">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <div>
+                                <?= htmlspecialchars($error) ?>
+                            </div>
+                        </div>
+                        <div class="admin-form-actions" style="border-top: none; padding-top: 0; margin-top: var(--space-lg);">
+                            <a href="login.php" class="admin-btn admin-btn-secondary w-100 justify-content-center" style="padding: var(--space-md) var(--space-lg);">
+                                <i class="bi bi-arrow-left"></i> Back to Login
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted mb-4" style="font-size:.95rem;">Enter your email address and we'll send you a link to reset your password.</p>
+
+                        <form method="post" class="mt-3">
+                            <div class="admin-form-group">
+                                <label for="email" class="admin-form-label required">Email Address</label>
+                                <input type="email" class="admin-form-input" id="email" name="email" autocomplete="email" required>
+                            </div>
+                            <div class="admin-form-actions" style="border-top: none; padding-top: 0; margin-top: var(--space-lg);">
+                                <button type="submit" class="admin-btn admin-btn-primary w-100 justify-content-center" style="padding: var(--space-md) var(--space-lg);">
+                                    <i class="bi bi-envelope"></i> Send Reset Link
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="d-flex justify-content-center align-items-center mt-3">
+                            <a href="login.php" class="fs-sm text-muted">
+                                <i class="bi bi-arrow-left"></i> Back to Login
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
+                <p class="text-center mt-4 mb-0" style="color: rgba(255,255,255,0.7); font-size: .85rem;">
+                    © <?= date('Y') ?> <?= SITE_NAME ?> · <?= SITE_TAGLINE ?>
+                </p>
             </div>
         </div>
     </div>

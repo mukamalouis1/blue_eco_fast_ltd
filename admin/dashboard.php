@@ -10,9 +10,9 @@ try {
 
     // Get stats
     $totalEnquiries = $pdo->query("SELECT COUNT(*) FROM enquiries")->fetchColumn();
-    $totalUsers = $pdo->query("SELECT COUNT(*) FROM users WHERE role='user'")->fetchColumn();
+    $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
     $totalCars = $pdo->query("SELECT COUNT(*) FROM cars")->fetchColumn();
-    $pendingEnquiries = $pdo->query("SELECT COUNT(*) FROM enquiries")->fetchColumn();
+    $pendingEnquiries = $pdo->query("SELECT COUNT(*) FROM enquiries WHERE status='pending'")->fetchColumn();
 
     // Get recent enquiries
     $stmt = $pdo->query("SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 10");
@@ -73,7 +73,7 @@ try {
             <hr class="admin-nav-divider">
             <ul class="admin-nav">
                 <li class="admin-nav-item">
-                    <a href="../profile.php" class="admin-nav-link">
+                    <a href="profile.php" class="admin-nav-link">
                         <i class="bi bi-person-circle"></i> My Profile
                     </a>
                 </li>

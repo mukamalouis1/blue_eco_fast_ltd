@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_user'])) {
     $email = clean($_POST['email'] ?? '');
     $full_name = clean($_POST['full_name'] ?? '');
     $phone = clean($_POST['phone'] ?? '');
-    $role = clean($_POST['role'] ?? 'user');
+    $role = 'admin';
 
     $errors = [];
 
@@ -120,7 +120,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll()
             <hr class="admin-nav-divider">
             <ul class="admin-nav">
                 <li class="admin-nav-item">
-                    <a href="../profile.php" class="admin-nav-link">
+                    <a href="profile.php" class="admin-nav-link">
                         <i class="bi bi-person-circle"></i> My Profile
                     </a>
                 </li>
@@ -245,13 +245,6 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll()
                         <div class="admin-form-group">
                             <label for="phone" class="admin-form-label">Phone Number</label>
                             <input type="tel" class="admin-form-input" id="phone" name="phone">
-                        </div>
-                        <div class="admin-form-group">
-                            <label for="role" class="admin-form-label">Role</label>
-                            <select class="admin-form-select" id="role" name="role">
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                            </select>
                         </div>
                     </div>
                     <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding: 16px;">

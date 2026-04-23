@@ -50,7 +50,7 @@ $pageTitle = SITE_NAME . ' — ' . SITE_TAGLINE;
       <?php if (isset($_SESSION['id'])): ?>
         <div class="navbar-nav">
           <span class="navbar-text me-2">Welcome, <?= htmlspecialchars($_SESSION['email']) ?>!</span>
-          <a class="nav-link" href="dashboard.php">Dashboard</a>
+          <a class="nav-link" href="admin/dashboard.php">Admin</a>
           <a class="nav-link" href="logout.php">Logout</a>
         </div>
       <?php else: ?>
