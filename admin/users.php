@@ -85,8 +85,8 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll()
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <h5><i class="bi bi-envelope"></i> Enquiries</h5>
-                <p>Manage messages</p>
+                <h5><i class="bi bi-people"></i> Users</h5>
+                <p>Manage user accounts</p>
             </div>
             <nav>
                 <ul class="admin-nav">

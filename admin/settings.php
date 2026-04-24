@@ -54,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <h5><i class="bi bi-envelope"></i> Enquiries</h5>
-                <p>Manage messages</p>
+                <h5><i class="bi bi-gear"></i> Settings</h5>
+                <p>Manage system settings</p>
             </div>
             <nav>
                 <ul class="admin-nav">

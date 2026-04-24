@@ -100,8 +100,8 @@ if (isset($_GET['edit'])) {
         <!-- Admin Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <h5><i class="bi bi-envelope"></i> Enquiries</h5>
-                <p>Manage messages</p>
+                <h5><i class="bi bi-ev-front"></i> Cars</h5>
+                <p>Manage vehicle inventory</p>
             </div>
             <nav>
                 <ul class="admin-nav">
